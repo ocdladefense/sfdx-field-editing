@@ -1,33 +1,27 @@
 {
-  "name": "ExampleSfdxRepository",
+  "name": "FieldEditing",
   "namespace": "",
   "packageDirectories": [
     {
       "path": "sfdx-source/Modules/default",
-      "package": "DefaultModule",
+      "package": "Field Editing Widgets",
       "versionName": "ver 0.1",
       "versionNumber": "0.1.0.NEXT",
       "default": false,
-      "versionDescription": "Created as part of the GitHub template for sfdx repositories.",
-      "dependencies": [
-        {
-            "package": "Json"
-        },
-        {
-            "package": "Http"
-        }
-      ]
+      "versionDescription": ""
     },
     {
-        "path": "sfdx-source/unpackaged",
-        "default": false
+      "path": "sfdx-source/unpackaged",
+      "default": false
     },
     {
-        "path": "sfdx-source/sfdx",
-        "default": true
+      "path": "sfdx-source/sfdx",
+      "default": true
     }
   ],
   "sfdcLoginUrl": "https://test.salesforce.com",
   "sourceApiVersion": "58.0",
-  "packageAliases": {}
+  "packageAliases": {
+    "Field Editing Widgets": "0HoVJ000000004r0AA"
+  }
 }

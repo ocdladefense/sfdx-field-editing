@@ -1,0 +1,65 @@
+<apex:page controller="FileUploadEditor" language="en" contentType="text/html; charset=utf-8" showHeader="True" standardStylesheets="True" docType="html-5.0" cache="False" applyHtmlTag="True" applyBodyTag="True">
+    
+
+    
+        <h1 class="heading" style="font-size:larger;">
+            Editing field "{!fieldName}"
+        </h1>
+        <br />
+    
+    
+    <apex:image rendered="{!NOT(ISBLANK(fileUrl))}" id="file-preview" style="max-width:600px;" value="{!fileUrl}" alt="File upload." />
+    <apex:pageBlock rendered="{!ISBLANK(fileUrl)}">
+        <h2 id="no-image">
+            No image has been selected.
+        </h2>
+        <apex:image id="file-preview-none" style="max-width:600px;" />
+    </apex:pageBlock>
+        <apex:form id="img-widget">
+            
+            <apex:inputFile id="file-select" value="{!blobData}" filename="{!fileName}" />
+            <!-- <apex:image id="file-preview" style="max-width:600px;" value="{!IMAGEPROXYURL(imgUrl)}" alt="File upload." /> -->
+            <apex:inputHidden id="file-mime" value="{!fileMime}" />
+            <apex:commandButton action="{!doSubmit}" value="Save" />
+            <apex:commandButton action="{!removeImage}" value="Remove Image" />
+            <apex:commandButton action="{!doCancel}" value="Cancel" />
+        </apex:form>
+        
+        
+        
+<script>
+
+   
+function readURL(input) {
+
+    console.log(input.files);
+    if (input.files && input.files[0]) {
+		let theFile = input.files[0];
+        var reader = new FileReader();
+
+        reader.onload = function(e) {
+            document.querySelector("[id*='no-image']").setAttribute('style','display:none;');
+            document.querySelector("[id*='file-preview']").src = e.target.result;
+            document.querySelector("[id*='file-mime']").value = theFile.type;
+
+        }
+
+        reader.readAsDataURL(theFile);
+    }
+}
+        
+
+
+let imgSelect = document.querySelector('[id*=file-select]');
+
+imgSelect.addEventListener('change', function(e){
+    readURL(e.target);
+});
+        
+
+        
+</script>
+
+   
+
+</apex:page>

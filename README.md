@@ -1,6 +1,18 @@
-# Salesforce DX Project: Next Steps
+# SFDX Project Template
+Now that you’ve created a Salesforce DX project, what’s next? 
 
-Now that you’ve created a Salesforce DX project, what’s next? Here are some documentation resources to get you started.
+## Configure this repo:
+* Update <code>sfdx-project.json</code> to include data appropriate to your package.
+* Enable any necessary Salesforce extensions in VSCode, especially the Salesforce Extension Pack.
+* Identify the lifecycle commands used to create, version, release and install the package.
+* Create the package.
+
+### Update <code>sfdx-project.json</code>.
+
+### Create the package.
+```bash
+sf package create --name "Field Editing Widgets" --package-type Unlocked --path sfdx-source/Modules/default --org-dependent
+```
 
 ## How Do You Plan to Deploy Your Changes?
 
