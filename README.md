@@ -24,7 +24,7 @@ sf package version create --package "Field Editing Widgets" --code-coverage --in
 
 ### Release a package version
 ```bash
-sf package version promote --package "Field Editing Widgets@0.1.0-2"
+sf package version promote --package "Field Editing Widgets@0.3.0-1"
 ```
 
 ## How Do You Plan to Deploy Your Changes?

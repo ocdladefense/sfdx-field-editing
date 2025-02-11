@@ -6,7 +6,7 @@
       "path": "sfdx-source/Modules/default",
       "package": "Field Editing Widgets",
       "versionName": "Spring '25",
-      "versionNumber": "0.2.0.NEXT",
+      "versionNumber": "0.3.0.NEXT",
       "default": false,
       "versionDescription": "Custom field editing widgets."
     },
@@ -25,6 +25,7 @@
     "Field Editing Widgets": "0HoVJ000000004r0AA",
     "Field Editing Widgets@0.1.0-1": "04tVJ000000AfLFYA0",
     "Field Editing Widgets@0.1.0-2": "04tVJ000000AfMrYAK",
-    "Field Editing Widgets@0.2.0-1": "04tVJ000000AfQ5YAK"
+    "Field Editing Widgets@0.2.0-1": "04tVJ000000AfQ5YAK",
+    "Field Editing Widgets@0.3.0-1": "04tVJ000000Ai6DYAS"
   }
 }
