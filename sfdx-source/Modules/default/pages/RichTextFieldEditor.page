@@ -1,56 +1,121 @@
-<apex:page controller="FieldEditor" language="en" contentType="text/html; charset=utf-8" showHeader="True" standardStylesheets="True" docType="html-5.0" cache="False" applyHtmlTag="True" applyBodyTag="False">
+<apex:page language="en" controller="RichTextFieldEditor" contentType="text/html; charset=utf-8" showHeader="True" standardStylesheets="True" docType="html-5.0" cache="False" applyHtmlTag="True" applyBodyTag="False">
+
+  
+
+	<head>
+        <meta charset="utf-8" />
+		<title>OCLDA | CKEditor 5 Sample</title>
+        <apex:stylesheet value="{!$Resource.CKEditorCSSV_1}" />
+        <link rel="stylesheet" href="https://cdn.ckeditor.com/ckeditor5/44.1.0/ckeditor5.css" crossorigin="anonymous" />
+        <link rel="stylesheet" href="https://cdn.ckeditor.com/ckeditor5-premium-features/44.1.0/ckeditor5-premium-features.css" crossorigin="anonymous" />
+        
+        <script type="text/javascript">
+//<![CDATA[
+        
+        function saveCKEditorData(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            // Get the editor data.
+            let html = editor.getData(); 
+            console.log("Saving editor data.");
+            saveData(html);
+		}
+//]]>
+            </script>
+	</head>
+	<body>
+		<div class="main-container">
+			<div class="editor-container editor-container_classic-editor editor-container_include-style" id="editor-container">
+                <div class="editor-container__editor"><div id="editor"><apex:outputText value="{!fieldValue}" escape="False" /></div></div>
+			</div>
+		</div>
     
-
-    <link rel="stylesheet" type="text/css" href="https://{!codeServer}/sites/force.com/assets/css/ckeditor.css" />
-    <apex:includeScript value="{!$Resource.CKEditor}" />
-    <script src="https://{!codeServer}/sites/force.com/assets/js/CKEditorInit.js">
-    </script>
-    
-    <body>
-
-            <apex:form id="foobar">
-                <apex:inputTextArea id="editor" value="{!fieldValue}">
-                </apex:inputTextArea>
-                
-                <apex:commandButton action="{!doSubmit}" value="Save" />
-                <apex:commandButton action="{!doCancel}" value="Back to Record" />
-            </apex:form>
-
-
-<!--
-The "super-build" of CKEditor&nbsp;5 served via CDN contains a large set of plugins and multiple editor types.
-See https://ckeditor.com/docs/ckeditor5/latest/installation/getting-started/quick-start.html#running-a-full-featured-editor-from-cdn
--->
-
+        <apex:outputPanel id="out">
+            <apex:actionStatus startText="Ready..." id="myStatus">
+                <apex:facet name="stop">Saved!</apex:facet>
+            </apex:actionStatus>
+        </apex:outputPanel>
         
-        <script>  
+        <apex:form id="field-editor">
         
-        // This sample still does not showcase all CKEditor&nbsp;5 features (!)
-        // Visit https://ckeditor.com/docs/ckeditor5/latest/features/index.html to browse all the features.
-            ClassicEditor.create( document.querySelector( '[id*="editor"]' ), ckeditorConfig )
-            .then( editor => {
-                window.editor = editor;
-            } )
-            .catch( handleSampleError );
+            <apex:actionFunction action="{!doSubmit}" name="saveData" rerender="out" status="myStatus">
+                <apex:param name="p1" assignTo="{!fieldValue}" value="" />
+            </apex:actionFunction>
 
-
-
-            function handleSampleError( error ) {
-                const issueUrl = 'https://github.com/ckeditor/ckeditor5/issues';
-                const buildId = '"d8oas6jeiwb7-9wiot14rj9hh"';
-                    
-                const message = [
-                    'Oops, something went wrong!',
-                    `Please, report the following error on ${issueUrl} with the build id ${buildId} and the error stack trace:`
-                ].join( '\n' );
-            
-                console.error( message );
-                console.error( error );
-            }
+            <button id="editor-save">Save</button>
+            <apex:commandButton action="{!doCancel}" value="Back to Record" />
+        </apex:form>
         
-      // initEditor('[id*="editor"').then( eInstance => { editor = eInstance; });
-
+		<script src="https://cdn.ckeditor.com/ckeditor5/44.1.0/ckeditor5.umd.js" crossorigin="anonymous">
         </script>
-    </body>
+		<script src="https://cdn.ckeditor.com/ckeditor5-premium-features/44.1.0/ckeditor5-premium-features.umd.js" crossorigin="anonymous">
+        </script>
+		<script src="https://cdn.ckbox.io/ckbox/2.6.1/ckbox.js" crossorigin="anonymous">
+        </script>
+        
+        <apex:includeScript value="{!$Resource.CKEditorInitV1_0}" loadOnReady="true" />
+        <script type="text/javascript">
+//<![CDATA[
 
+let editor;        
+        window.addEventListener("load",function() {
+            
+console.log("CKEditor Loaded.");
+        document.getElementById("editor-save").addEventListener("click", saveCKEditorData);
+configUpdateAlert(editorConfig);
+
+ClassicEditor.create(document.querySelector('#editor'), editorConfig).then( newEditor => { editor = newEditor; } );
+
+            });
+/**
+ * This function exists to remind you to update the config needed for premium features.
+ * The function can be safely removed. Make sure to also remove call to this function when doing so.
+ */
+function configUpdateAlert(config) {
+	if (configUpdateAlert.configUpdateAlertShown) {
+		return;
+	}
+
+	const isModifiedByUser = (currentValue, forbiddenValue) => {
+		if (currentValue === forbiddenValue) {
+			return false;
+		}
+
+		if (currentValue === undefined) {
+			return false;
+		}
+
+		return true;
+	};
+
+	const valuesToUpdate = [];
+
+	configUpdateAlert.configUpdateAlertShown = true;
+
+	if (!isModifiedByUser(config.licenseKey, '<YOUR_LICENSE_KEY>')) {
+		valuesToUpdate.push('LICENSE_KEY');
+	}
+
+	if (!isModifiedByUser(config.cloudServices?.tokenUrl, '<YOUR_CLOUD_SERVICES_TOKEN_URL>')) {
+		valuesToUpdate.push('CLOUD_SERVICES_TOKEN_URL');
+	}
+
+	if (valuesToUpdate.length) {
+		window.alert(
+			[
+				'Please update the following values in your editor config',
+				'to receive full access to Premium Features:',
+				'',
+				...valuesToUpdate.map(value => ` - ${value}`)
+			].join('\n')
+		);
+	}
+}
+
+//]]>
+            </script>
+	</body>
+
+
+        
 </apex:page>

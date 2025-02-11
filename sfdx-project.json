@@ -5,10 +5,10 @@
     {
       "path": "sfdx-source/Modules/default",
       "package": "Field Editing Widgets",
-      "versionName": "ver 0.1",
-      "versionNumber": "0.1.0.NEXT",
+      "versionName": "Spring '25",
+      "versionNumber": "0.2.0.NEXT",
       "default": false,
-      "versionDescription": ""
+      "versionDescription": "Custom field editing widgets."
     },
     {
       "path": "sfdx-source/unpackaged",
@@ -22,6 +22,9 @@
   "sfdcLoginUrl": "https://test.salesforce.com",
   "sourceApiVersion": "58.0",
   "packageAliases": {
-    "Field Editing Widgets": "0HoVJ000000004r0AA"
+    "Field Editing Widgets": "0HoVJ000000004r0AA",
+    "Field Editing Widgets@0.1.0-1": "04tVJ000000AfLFYA0",
+    "Field Editing Widgets@0.1.0-2": "04tVJ000000AfMrYAK",
+    "Field Editing Widgets@0.2.0-1": "04tVJ000000AfQ5YAK"
   }
 }
