@@ -1,0 +1,137 @@
+<apex:page language="en" controller="RichTextFieldEditor" contentType="text/html; charset=utf-8" showHeader="True" standardStylesheets="True" docType="html-5.0" cache="False" applyHtmlTag="True" applyBodyTag="False">
+
+
+
+    <head>
+        <meta charset="utf-8" />
+        <title>OCDLA | TinyMCE 7 Sample</title>
+        <script src="https://cdn.tiny.cloud/1/unzc9c7hfy0hz869mff1hgk1kly1uhxg55x5zaz21k3dxbi6/tinymce/7/tinymce.min.js" referrerpolicy="origin">
+        </script>
+    </head>
+
+    <body>
+
+
+
+        <script>
+            //<![CDATA[
+            tinymce.init({
+                selector: '#editor',
+                plugins: [
+                    // Core editing features
+                    'anchor', 'autolink', 'charmap', 'codesample', 'emoticons', 'image', 'link', 'lists', 'media', 'searchreplace', 'table', 'visualblocks', 'wordcount',
+                    // Your account includes a free trial of TinyMCE premium features
+                    // Try the most popular premium features until Feb 26, 2025:
+                    'checklist', 'mediaembed', 'casechange', 'export', 'formatpainter', 'pageembed', 'a11ychecker', 'tinymcespellchecker', 'permanentpen', 'powerpaste', 'advtable', 'advcode', 'editimage', 'advtemplate', 'ai', 'mentions', 'tinycomments', 'tableofcontents', 'footnotes', 'mergetags', 'autocorrect', 'typography', 'inlinecss', 'markdown', 'importword', 'exportword', 'exportpdf'
+                ],
+                toolbar: 'undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | link image media table mergetags | addcomment showcomments | spellcheckdialog a11ycheck typography | align lineheight | checklist numlist bullist indent outdent | emoticons charmap | removeformat',
+                tinycomments_mode: 'embedded',
+                tinycomments_author: 'Author name',
+                mergetags_list: [
+                    { value: 'First.Name', title: 'First Name' },
+                    { value: 'Email', title: 'Email' },
+                ],
+                ai_request: (request, respondWith) => respondWith.string(() => Promise.reject('See docs to implement AI Assistant')),
+            });
+
+            function saveCKEditorData(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                // Get the editor data.
+                // let html = editor.getData(); 
+                let html = tinymce.activeEditor.getContent("#editor");
+                console.log("Saving editor data.");
+                saveData(html);
+            }
+            //]]>
+        </script>
+
+
+        <div class="main-container">
+            <div class="editor-container editor-container_classic-editor editor-container_include-style" id="editor-container">
+                <div class="editor-container__editor">
+                    <div id="editor">
+                        <apex:outputText value="{!fieldValue}" escape="False" />
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <apex:outputPanel id="out">
+            <apex:actionStatus startText="Ready..." id="myStatus">
+                <apex:facet name="stop">Saved!</apex:facet>
+            </apex:actionStatus>
+        </apex:outputPanel>
+
+        <apex:form id="field-editor">
+
+            <apex:actionFunction action="{!doSubmit}" name="saveData" rerender="out" status="myStatus">
+                <apex:param name="p1" assignTo="{!fieldValue}" value="" />
+            </apex:actionFunction>
+
+            <button id="editor-save">Save</button>
+            <apex:commandButton action="{!doCancel}" value="Back to Record" />
+        </apex:form>
+
+
+        <script type="text/javascript">
+            //<![CDATA[
+
+            let editor;
+            window.addEventListener("load", function () {
+                console.log("CKEditor Loaded.");
+                document.getElementById("editor-save").addEventListener("click", saveCKEditorData);
+            });
+
+            /**
+             * This function exists to remind you to update the config needed for premium features.
+             * The function can be safely removed. Make sure to also remove call to this function when doing so.
+             */
+            function configUpdateAlert(config) {
+                if (configUpdateAlert.configUpdateAlertShown) {
+                    return;
+                }
+
+                const isModifiedByUser = (currentValue, forbiddenValue) => {
+                    if (currentValue === forbiddenValue) {
+                        return false;
+                    }
+
+                    if (currentValue === undefined) {
+                        return false;
+                    }
+
+                    return true;
+                };
+
+                const valuesToUpdate = [];
+
+                configUpdateAlert.configUpdateAlertShown = true;
+
+                if (!isModifiedByUser(config.licenseKey, '<YOUR_LICENSE_KEY>')) {
+                    valuesToUpdate.push('LICENSE_KEY');
+                }
+
+                if (!isModifiedByUser(config.cloudServices?.tokenUrl, '<YOUR_CLOUD_SERVICES_TOKEN_URL>')) {
+                    valuesToUpdate.push('CLOUD_SERVICES_TOKEN_URL');
+                }
+
+                if (valuesToUpdate.length) {
+                    window.alert(
+                        [
+                            'Please update the following values in your editor config',
+                            'to receive full access to Premium Features:',
+                            '',
+                            ...valuesToUpdate.map(value => ` - ${value}`)
+                        ].join('\n')
+                    );
+                }
+            }
+
+            //]]>
+        </script>
+    </body>
+
+
+
+</apex:page>
