@@ -4,9 +4,10 @@
 
 	<head>
 		<meta charset="utf-8" />
-		<title>OCDLA | TinyMCE 7 Sample</title>
-		<script src="https://cdn.tiny.cloud/1/unzc9c7hfy0hz869mff1hgk1kly1uhxg55x5zaz21k3dxbi6/tinymce/7/tinymce.min.js" referrerpolicy="origin">
-		</script>
+		<title>OCDLA | Example Froala Editor</title>
+	    <link href='https://cdn.jsdelivr.net/npm/froala-editor@latest/css/froala_editor.pkgd.min.css' rel='stylesheet' type='text/css' />
+		<script type='text/javascript' src='https://cdn.jsdelivr.net/npm/froala-editor@latest/js/froala_editor.pkgd.min.js'>
+        </script>  
 	</head>
 
 	<body>
@@ -15,32 +16,13 @@
 
 		<script>
 			//<![CDATA[
-			tinymce.init({
-				selector: '#editor',
-				height: '60vh',
-				plugins: [
-					// Core editing features
-					'anchor', 'autolink', 'charmap', 'codesample', 'emoticons', 'image', 'link', 'lists', 'media', 'searchreplace', 'table', 'visualblocks', 'wordcount',
-					// Your account includes a free trial of TinyMCE premium features
-					// Try the most popular premium features until Feb 26, 2025:
-					'checklist', 'mediaembed', 'casechange', 'export', 'formatpainter', 'pageembed', 'a11ychecker', 'tinymcespellchecker', 'permanentpen', 'advtable', 'advcode', 'editimage', 'advtemplate', 'ai', 'mentions', 'tinycomments', 'tableofcontents', 'footnotes', 'mergetags', 'autocorrect', 'typography', 'inlinecss', 'markdown', 'importword', 'exportword', 'exportpdf'
-				],
-				toolbar: 'undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | link image media table mergetags | addcomment showcomments | spellcheckdialog a11ycheck typography | align lineheight | checklist numlist bullist indent outdent | emoticons charmap | removeformat',
-				tinycomments_mode: 'embedded',
-				tinycomments_author: 'Author name',
-				mergetags_list: [
-					{ value: 'First.Name', title: 'First Name' },
-					{ value: 'Email', title: 'Email' },
-				],
-				ai_request: (request, respondWith) => respondWith.string(() => Promise.reject('See docs to implement AI Assistant')),
-			});
-
-			function saveCKEditorData(e) {
+            
+			function saveEditorData(e) {
 				e.preventDefault();
 				e.stopPropagation();
 				// Get the editor data.
 				// let html = editor.getData(); 
-				let html = tinymce.activeEditor.getContent("#editor");
+				let html = editor.html.get(true);
 				console.log("Saving editor data.");
 				saveData(html);
 			}
@@ -79,9 +61,121 @@
 			//<![CDATA[
 
 			let editor;
+        
+function fileToBase64(file) {
+
+  	return new Promise(function(resolve, reject) {
+		const reader = new FileReader();
+     	let base64String;
+        reader.onloadend = () => {
+            resolve(reader.result);
+		};
+		reader.onerror = (e) => {
+        	reject(e.message); 
+		};
+
+		reader.readAsDataURL(file); 
+	});
+}
+
+
+
+
+
+
+
+        
+        	let config = {
+                  fontFamilySelection: true,
+                fontSizeSelection: true,
+                paragraphFormatSelection: true,
+ toolbarButtons: [
+     ['clearFormatting','bold', 'italic', 'underline','fontFamily', 'fontSize', 'textColor', 'strikeThrough', 'subscript', 'superscript','-',
+      'alignLeft', 'alignCenter', 'formatOLSimple', 'alignRight', 'alignJustify', 'formatOL', 'formatUL', 'paragraphFormat', 'paragraphStyle', 'lineHeight', 'outdent', 'indent', 'quote','-',
+	'insertLink', 'insertImage', 'insertVideo', 'insertTable', 'emoticons', 'fontAwesome', 'specialCharacters', 'embedly', 'insertFile', 'insertHR','-',
+	'undo', 'redo', 'fullscreen', 'print', 'getPDF', 'spellChecker', 'selectAll', 'html', 'help','-',
+      'backgroundColor', 'inlineClass', 'inlineStyle']
+ ],
+ // Set the image upload parameter.
+                // imageUploadParam: 'image_param',
+            imageUploadParams: { data: null, munged: false },
+  
+    // Set the image upload URL.
+                // imageUploadURL: 'https://ocdla--ocdpartial.sandbox.my.site.com/AwsS3PostRequest',
+                imageUploadURL: '/apex/AwsS3PostRequest',
+
+
+    events: {
+        'image.beforeUpload': function(images) {
+			console.log(this.image);
+            console.log('beforeUpload');
+            let foo = {};
+            // let self = this;
+            if(this.opts.imageUploadParams.munged === true) return true;
+            
+			fileToBase64(images[0]).then(data => {
+                let pattern = /^data:(image\/\w+);base64,(.*)/gi;
+                let matches = [...data.matchAll(pattern)][0];
+                this.opts.imageUploadParams.mimeType = matches[1];
+            	this.opts.imageUploadParams.data = matches[2];
+                this.opts.imageUploadParams.munged = true;
+                console.log(data);
+                /*foo.data = data;
+                    fetch('/apex/AwsS3PostRequest',{
+                        method:'POST',
+                        body:JSON.stringify(foo),
+                        headers:{'Content-Type': 'application/json'}
+                    });*/
+            	this.image.upload(images);
+            	return false;
+            });
+            console.log(this);
+            console.log(images);
+        	return false;
+            // Return false if you want to stop the image upload.
+        },
+        'image.uploaded': function (response) {
+            // Image was uploaded to the server.
+        this.opts.imageUploadParams = {data: null, munged: false}; // reset flag
+
+        },
+        'image.inserted': function ($img, response) {
+            // Image was inserted in the editor.
+            console.log($img);
+            return false;
+        },
+        'image.replaced': function ($img, response) {
+            // Image was replaced in the editor.
+        },
+        'image.error': function (error, response) {
+            // Bad link.
+            if (error.code == 1) {  }
+
+        // No link in upload response.
+        else if(error.code == 2) {  }
+
+        // Error during image upload.
+        else if (error.code == 3) {  }
+
+// Parsing response failed.
+else if (error.code == 4) {  }
+
+// Image too text-large.
+else if (error.code == 5) {  }
+
+// Invalid image type.
+else if (error.code == 6) {  }
+
+// Image can be uploaded only to same domain in IE 8 and IE 9.
+else if (error.code == 7) {  }
+
+        // Response contains the original server response to the request if available.
+      }
+    }
+                };
 			window.addEventListener("load", function () {
-				console.log("CKEditor Loaded.");
-				document.getElementById("editor-save").addEventListener("click", saveCKEditorData);
+                editor = new FroalaEditor('#editor', config);
+				document.getElementById("editor-save").addEventListener("click", saveEditorData);
 			});
 
 			/**

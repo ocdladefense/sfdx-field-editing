@@ -1,7 +1,7 @@
-# SFDX Project Template
-Now that you’ve created a Salesforce DX project, what’s next? 
+# SFDX Field Editing Widgets
+Helpder pages and classes to facilitate file uploads and rich text editing within the Salesforce platform.
 
-## Configure Your Salesforce DX Project
+## General info
 The `sfdx-project.json` file contains useful configuration information for your project. See [Salesforce DX Project Configuration](https://developer.salesforce.com/docs/atlas.en-us.sfdx_dev.meta/sfdx_dev/sfdx_dev_ws_config.htm) in the _Salesforce DX Developer Guide_ for details about this file.
 
 ### Configure this repo:
@@ -12,7 +12,7 @@ The `sfdx-project.json` file contains useful configuration information for your 
 
 ### Update <code>sfdx-project.json</code>.
 
-### Create the package.
+### Create the package
 ```bash
 sf package create --name "Field Editing Widgets" --package-type Unlocked --path sfdx-source/Modules/default --org-dependent
 ```

@@ -61,6 +61,30 @@
 			//<![CDATA[
 
 			let editor;
+        
+function fileToBase64(file) {
+
+  	return new Promise(function(resolve, reject) {
+		const reader = new FileReader();
+     	let base64String;
+        reader.onloadend = () => {
+            resolve(reader.result);
+		};
+		reader.onerror = (e) => {
+        	reject(e.message); 
+		};
+
+		reader.readAsDataURL(file); 
+	});
+}
+
+
+
+
+
+
+
+        
         	let config = {
                   fontFamilySelection: true,
                 fontSizeSelection: true,
@@ -71,7 +95,83 @@
 	'insertLink', 'insertImage', 'insertVideo', 'insertTable', 'emoticons', 'fontAwesome', 'specialCharacters', 'embedly', 'insertFile', 'insertHR','-',
 	'undo', 'redo', 'fullscreen', 'print', 'getPDF', 'spellChecker', 'selectAll', 'html', 'help','-',
       'backgroundColor', 'inlineClass', 'inlineStyle']
- ]        
+ ],
+ // Set the image upload parameter.
+                // imageUploadParam: 'image_param',
+            imageUploadParams: { data: null, munged: false },
+  
+    // Set the image upload URL.
+                // imageUploadURL: 'https://ocdla--ocdpartial.sandbox.my.site.com/AwsS3PostRequest',
+                imageUploadURL: '/apex/AwsS3PostRequest',
+
+
+    events: {
+        'image.beforeUpload': function(images) {
+			console.log(this.image);
+            console.log('beforeUpload');
+            let foo = {};
+            // let self = this;
+            if(this.opts.imageUploadParams.munged === true) return true;
+            
+			fileToBase64(images[0]).then(data => {
+                let pattern = /^data:(image\/\w+);base64,(.*)/gi;
+                let matches = [...data.matchAll(pattern)][0];
+                this.opts.imageUploadParams.mimeType = matches[1];
+            	this.opts.imageUploadParams.data = matches[2];
+                this.opts.imageUploadParams.munged = true;
+                console.log(data);
+                /*foo.data = data;
+                    fetch('/apex/AwsS3PostRequest',{
+                        method:'POST',
+                        body:JSON.stringify(foo),
+                        headers:{'Content-Type': 'application/json'}
+                    });*/
+            	this.image.upload(images);
+            	return false;
+            });
+            console.log(this);
+            console.log(images);
+        	return false;
+            // Return false if you want to stop the image upload.
+        },
+        'image.uploaded': function (response) {
+            // Image was uploaded to the server.
+        this.opts.imageUploadParams = {data: null, munged: false}; // reset flag
+
+        },
+        'image.inserted': function ($img, response) {
+            // Image was inserted in the editor.
+            console.log($img);
+            return false;
+        },
+        'image.replaced': function ($img, response) {
+            // Image was replaced in the editor.
+        },
+        'image.error': function (error, response) {
+            // Bad link.
+            if (error.code == 1) {  }
+
+        // No link in upload response.
+        else if(error.code == 2) {  }
+
+        // Error during image upload.
+        else if (error.code == 3) {  }
+
+// Parsing response failed.
+else if (error.code == 4) {  }
+
+// Image too text-large.
+else if (error.code == 5) {  }
+
+// Invalid image type.
+else if (error.code == 6) {  }
+
+// Image can be uploaded only to same domain in IE 8 and IE 9.
+else if (error.code == 7) {  }
+
+        // Response contains the original server response to the request if available.
+      }
+    }
                 };
 			window.addEventListener("load", function () {
                 editor = new FroalaEditor('#editor', config);
